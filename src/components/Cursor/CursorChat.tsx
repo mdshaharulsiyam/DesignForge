@@ -3,22 +3,26 @@ import { CursorChatProps, CursorMode } from '@/types/type'
 import React from 'react'
 
 const CursorChat = ({ cursor, cursorState, setCursorState, updateMyPresence }: CursorChatProps) => {
-    const handelChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        updateMyPresence({ message: e.target.value })
+    const handelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = (e.target as HTMLInputElement).value;
+        updateMyPresence({ message: inputValue });
         setCursorState({
             mode: CursorMode.Chat,
             previousMessage: null,
-            message: e.target.value
-        })
-    }
+            message: inputValue
+        });
+    };
+
     const handelkeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            setCursorState({
-                mode: CursorMode.Chat,
-                previousMessage: cursorState.message,
-                message: ''
-            })
-        }else if (e.key === 'Escape') {
+            if (cursorState.mode === CursorMode.Chat) {
+                setCursorState({
+                    mode: CursorMode.Chat,
+                    previousMessage: cursorState.message,
+                    message: ''
+                })
+            }
+        } else if (e.key === 'Escape') {
             setCursorState({
                 mode: CursorMode.Hidden,
             })

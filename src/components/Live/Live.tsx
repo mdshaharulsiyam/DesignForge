@@ -3,11 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react'
 import LiveCursor from '../Cursor/LiveCursor'
 import { useMyPresence, useOthers } from '../../../liveblocks.config'
 import CursorChat from '../Cursor/CursorChat'
-import { CursorMode } from '@/types/type'
-// import { useOthers } from '@/assets/liveblocks.config'
+import { CursorMode, CursorState } from '@/types/type'
 
 const Live = () => {
-    const [cursorState, setCursorState] = useState({
+    const [cursorState, setCursorState] = useState<CursorState>({
         mode: CursorMode.Hidden
     })
     const others = useOthers()
