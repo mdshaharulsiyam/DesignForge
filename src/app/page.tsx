@@ -1,10 +1,13 @@
+'use client'
+import Live from "@/components/Live/Live";
 import { Room } from "./Room";
-import { CollaborativeApp } from "./CollaborativeApp";
+// import { CollaborativeApp } from "./CollaborativeApp";
 
 export default function Page() {
   return (
-    <Room>
-      <CollaborativeApp />
-    </Room>
+    <div>
+      {/* <CollaborativeApp /> */}
+      <Live/>
+    </div>
   );
 }
