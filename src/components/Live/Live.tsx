@@ -1,9 +1,9 @@
 'use client'
 import React, { useCallback, useEffect, useState } from 'react'
 import LiveCursor from '../Cursor/LiveCursor'
-import { useMyPresence, useOthers } from '../../../liveblocks.config'
+import { useBroadcastEvent, useEventListener, useMyPresence, useOthers } from '../../../liveblocks.config'
 import CursorChat from '../Cursor/CursorChat'
-import { CursorMode, CursorState, Reaction } from '@/types/type'
+import { CursorMode, CursorState, Reaction, ReactionEvent } from '@/types/type'
 import ReactionSelector from '../Reaction/ReactionButton'
 import FlyingReaction from '../Reaction/FlyingReaction'
 import useInterval from '@/hooks/useInterval'
@@ -15,15 +15,29 @@ const Live = () => {
     const [reaction, setReaction] = useState<Reaction[]>([])
     const others = useOthers()
     const [{ cursor }, updateMyPresence] = useMyPresence() as any;
+    const brodcast = useBroadcastEvent()
     useInterval(() => {
         if (cursorState.mode === CursorMode.Reaction && cursorState.isPressed && cursor) {
             setReaction((reactions) => reactions.concat([{
                 point: { x: cursor.x, y: cursor.y },
                 value: cursorState.reaction,
-                timestamp:Date.now()
+                timestamp: Date.now()
             }]))
+            brodcast({
+                x: cursor.x,
+                y: cursor.y,
+                value: cursorState.reaction
+            })
         }
-    }, 10)
+    }, 50)
+    useEventListener((evenData)=>{
+        const event = evenData.event as ReactionEvent
+        setReaction((reactions) => reactions.concat([{
+            point: { x: event.x, y: event.y },
+            value: event.value,
+            timestamp: Date.now()
+        }]))
+    })
     const handelPointerMove = useCallback((event: React.PointerEvent) => {
         event.preventDefault()
         if (cursor === null || cursorState.mode !== CursorMode.ReactionSelector) {
@@ -89,7 +103,7 @@ const Live = () => {
             onPointerLeave={handelPointerLeave}
             onPointerDown={handelPointerDown}
             onPointerUp={handelPointerUp}
-            className="h-[100vh] w-full flex justify-center items-center text-center border-4 border-red-50"
+            className="h-[100vh] w-full flex justify-center items-center text-center"
         >
             <h3 className="text-2xl text-white">DesignForge </h3>
             {reaction.map(item => (
