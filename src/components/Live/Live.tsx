@@ -5,6 +5,8 @@ import { useMyPresence, useOthers } from '../../../liveblocks.config'
 import CursorChat from '../Cursor/CursorChat'
 import { CursorMode, CursorState, Reaction } from '@/types/type'
 import ReactionSelector from '../Reaction/ReactionButton'
+import FlyingReaction from '../Reaction/FlyingReaction'
+import useInterval from '@/hooks/useInterval'
 
 const Live = () => {
     const [cursorState, setCursorState] = useState<CursorState>({
@@ -13,6 +15,15 @@ const Live = () => {
     const [reaction, setReaction] = useState<Reaction[]>([])
     const others = useOthers()
     const [{ cursor }, updateMyPresence] = useMyPresence() as any;
+    useInterval(() => {
+        if (cursorState.mode === CursorMode.Reaction && cursorState.isPressed && cursor) {
+            setReaction((reactions) => reactions.concat([{
+                point: { x: cursor.x, y: cursor.y },
+                value: cursorState.reaction,
+                timestamp:Date.now()
+            }]))
+        }
+    }, 10)
     const handelPointerMove = useCallback((event: React.PointerEvent) => {
         event.preventDefault()
         if (cursor === null || cursorState.mode !== CursorMode.ReactionSelector) {
@@ -35,7 +46,7 @@ const Live = () => {
     }, [cursorState.mode, setCursorState])
 
     const handelPointerUp = useCallback((event: React.PointerEvent) => {
-        setCursorState((state: CursorState) =>  cursorState.mode === CursorMode.Reaction ? { ...state, isPressed: true } : state)
+        setCursorState((state: CursorState) => cursorState.mode === CursorMode.Reaction ? { ...state, isPressed: true } : state)
     }, [cursorState.mode, setCursorState])
     useEffect(() => {
         const onKeyUp = (e: KeyboardEvent) => {
@@ -65,13 +76,13 @@ const Live = () => {
         }
     }, [updateMyPresence])
 
-    const setReactionFunction = useCallback((reaction : string)=>{
+    const setReactionFunction = useCallback((reaction: string) => {
         setCursorState({
-            mode : CursorMode.Reaction,
+            mode: CursorMode.Reaction,
             reaction,
-            isPressed:false
+            isPressed: false
         })
-    },[])
+    }, [])
     return (
         <div
             onPointerMove={handelPointerMove}
@@ -81,6 +92,15 @@ const Live = () => {
             className="h-[100vh] w-full flex justify-center items-center text-center border-4 border-red-50"
         >
             <h3 className="text-2xl text-white">DesignForge </h3>
+            {reaction.map(item => (
+                <FlyingReaction
+                    key={item.timestamp.toString()}
+                    x={item.point.x}
+                    y={item.point.y}
+                    timestamp={item.timestamp}
+                    value={item.value}
+                />
+            ))}
             {cursor && (
                 <CursorChat
                     updateMyPresence={updateMyPresence}
