@@ -17,6 +17,9 @@ const Live = () => {
     const [{ cursor }, updateMyPresence] = useMyPresence() as any;
     const brodcast = useBroadcastEvent()
     useInterval(() => {
+        setReaction((reactions) => reactions.filter((item) => item.timestamp > Date.now() - 4000))
+    }, 1000)
+    useInterval(() => {
         if (cursorState.mode === CursorMode.Reaction && cursorState.isPressed && cursor) {
             setReaction((reactions) => reactions.concat([{
                 point: { x: cursor.x, y: cursor.y },
@@ -30,7 +33,7 @@ const Live = () => {
             })
         }
     }, 50)
-    useEventListener((evenData)=>{
+    useEventListener((evenData) => {
         const event = evenData.event as ReactionEvent
         setReaction((reactions) => reactions.concat([{
             point: { x: event.x, y: event.y },
