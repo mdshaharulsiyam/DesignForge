@@ -8,7 +8,7 @@ export default function usePage() {
   console.log(path)
   return (
     <div>
-      {/* <NavBer /> */}
+      <NavBer />
       <Live />
     </div>
   );

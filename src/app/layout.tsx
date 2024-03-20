@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
 import "./globals.css";
 import { Room } from "./Room";
+import NextAuthProvider from "@/Providers/NextAuthProviders";
 
 const workSans = Work_Sans({
-   subsets: ["latin"] ,
-   variable:'--font-work-sans',
-   weight:['400','500','700']
-  });
+  subsets: ["latin"],
+  variable: '--font-work-sans',
+  weight: ['400', '500', '700']
+});
 
 export const metadata: Metadata = {
   title: "DesignForge",
@@ -22,10 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${workSans.className} bg-grey-200`}>
-        <Room>
-        {children}
-        </Room>
-        </body>
+        <NextAuthProvider >
+          <Room>
+            {children}
+          </Room>
+        </NextAuthProvider>
+      </body>
     </html>
   );
 }

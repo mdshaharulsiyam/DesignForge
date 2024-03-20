@@ -12,7 +12,7 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: '8',
+                hostname: '*',
                 port: '',
                 // pathname: '/account123/**',
             },
