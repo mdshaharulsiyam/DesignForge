@@ -1,19 +1,15 @@
-import { generateRandomName } from "@/lib/utils";
+
+import { useMemo } from "react";
 import { useOthers, useSelf } from "../../../liveblocks.config";
 import { Avatar } from "./Avater";
 import styles from './index.module.css'
 import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
-// import { auth } from "@/auth/auth";
-// import { Presence } from "@/types/type";
-// import { BaseUserMeta, User } from "@liveblocks/client";
 
-const ActiveUsers = async () => {
-    // const session = await auth()
+const ActiveUsers = () => {
+
     const session = useSession()
-    // console.log(session)
     const users = useOthers();
-    let currentUser = useSelf();//avatar
+    let currentUser = useSelf();
     if (!session?.data?.user?.email) {
         currentUser.info = undefined
         currentUser.id = undefined
@@ -27,25 +23,27 @@ const ActiveUsers = async () => {
     }
     console.log(users)
     const hasMoreUsers = users.length > 3;
+    const memorigedUser = useMemo(() => {
+        return (
+            <div className="flex items-center justify-center gap-1 py-2">
+                <div className="flex pl-3">
+                    {currentUser && (
+                        <Avatar otherStyle='border-[3px] border-primary-green' avatar={currentUser?.info?.avatar} name={currentUser?.info?.name} />
+                    )}
+                    {users.slice(0, 3).map(({ connectionId, info }) => {
+                        return (
+                            <Avatar key={connectionId} avatar={info?.avatar} name={info?.name} otherStyle='-ml-3' />
+                        );
+                    })}
 
-    return (
-        <main className="flex h-screen w-full select-none place-content-center place-items-center">
-            <div className="flex pl-3">
-                {currentUser && (
-                    <Avatar otherStyle='border-[3px] border-primary-green' avatar={currentUser?.info?.avatar} name={currentUser?.info?.name} />
-                )}
-                {users.slice(0, 3).map(({ connectionId, info }) => {
-                    return (
-                        <Avatar key={connectionId} avatar={info?.avatar} name={info?.name} otherStyle='-ml-3' />
-                    );
-                })}
-
-                {hasMoreUsers && <div className={styles.more}>+{users.length - 3}</div>}
+                    {hasMoreUsers && <div className={styles.more}>+{users.length - 3}</div>}
 
 
+                </div>
             </div>
-        </main>
-    );
+        )
+    }, [users.length])
+    return memorigedUser
 }
 export default ActiveUsers
 //src={currentUser?.info?.avatar} name={generateRandomName()}

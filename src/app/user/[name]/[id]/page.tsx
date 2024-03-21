@@ -7,9 +7,11 @@ export default function usePage() {
   const path = usePathname()
   console.log(path)
   return (
-    <div>
+    <main className="h-screen overflow-hidden">
       <NavBer />
-      <Live />
-    </div>
+      <section className="flex h-full flex-row">
+        <Live />
+      </section>
+    </main>
   );
 }
