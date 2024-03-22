@@ -10,6 +10,8 @@ import { useEffect, useRef, useState } from "react";
 import { handleCanvasMouseDown, handleCanvasMouseUp, handleCanvasObjectModified, handleCanvaseMouseMove, handleResize, initializeFabric, renderCanvas } from "@/lib/canvas";
 import { ActiveElement } from "@/types/type";
 import { useMutation, useStorage } from "../../../../liveblocks.config";
+import { handleDelete } from "@/lib/key-events";
+import { defaultNavElement } from "@/constants";
 export default function usePage({ params }: { params: { name: string } }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<fabric.Canvas | null>(null);
@@ -33,9 +35,49 @@ export default function usePage({ params }: { params: { name: string } }) {
     value: "",
     icon: "",
   })
+
+  const deleteAllShapes = useMutation(({ storage }: { storage: any }) => {
+    const canvasObjects = storage.get("canvasObjects");
+    if (!canvasObjects || canvasObjects.size === 0) return true;
+    for (const [key, value] of canvasObjects.entries()) {
+      canvasObjects.delete(key);
+    }
+    return canvasObjects.size === 0;
+  }, []);
+  const deleteShapeFromStorage = useMutation(({ storage }: { storage: any }, shapeId: any) => {
+    const canvasObjects = storage.get("canvasObjects");
+    canvasObjects.delete(shapeId);
+  }, []);
+
   const handleActiveElement = (elem: ActiveElement) => {
     setActiveElement(elem);
-    selectedShapeRef.current = elem?.value as string
+
+    switch (elem?.value) {
+      case "reset":
+        deleteAllShapes();
+        fabricRef.current?.clear();
+        setActiveElement(defaultNavElement);
+        break;
+      case "delete":
+        handleDelete(fabricRef.current as any, deleteShapeFromStorage);
+        setActiveElement(defaultNavElement);
+        break;
+      case "image":
+        imageInputRef.current?.click();
+        isDrawing.current = false;
+
+        if (fabricRef.current) {
+          fabricRef.current.isDrawingMode = false;
+        }
+        break;
+      case "comments":
+        break;
+
+      default:
+        // set the selected shape to the selected element
+        selectedShapeRef.current = elem?.value as string;
+        break;
+    }
   };
 
   useEffect(() => {
@@ -77,7 +119,11 @@ export default function usePage({ params }: { params: { name: string } }) {
         canvas: fabricRef.current,
       });
     });
+    return () => {
+      canvas.dispose()
+    }
   }, [])
+
   useEffect(() => {
     renderCanvas({
       fabricRef,

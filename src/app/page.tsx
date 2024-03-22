@@ -4,14 +4,14 @@ import Link from 'next/link'
 import { auth } from '@/auth/auth';
 import { Session } from 'next-auth';
 import { redirect } from 'next/navigation';
-function generateRandomString(length: number): string {
-    const characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    return Array.from({ length }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
-}
+// function generateRandomString(length: number): string {
+//     const characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//     return Array.from({ length }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
+// }
 const page = async () => {
     const session: Session | null = await auth();
     if (session?.user) {
-        const randomPathId = generateRandomString(10)
+        const randomPathId = 'project1'
         const username: string | undefined = session?.user?.name?.replace(/\s/g, "")
         const uri: string = `/user/${username}${randomPathId}`
         redirect(uri)
