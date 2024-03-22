@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { handleCanvasMouseDown, handleResize, initializeFabric } from "@/lib/canvas";
 import { ActiveElement } from "@/types/type";
-export default function usePage({ params }: { params: { name: string, id: string } }) {
+export default function usePage({ params }: { params: { name: string } }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<fabric.Canvas | null>(null);
   const shapeRef = useRef<fabric.Object | null>(null)
@@ -39,17 +39,15 @@ selectedShapeRef.current = elem?.value as string
       });
     });
   }, [])
-  const path = usePathname()
-  console.log(path)
   return (
-    <main key={`${params.name}-${params.id}`} className="h-screen overflow-hidden">
+    <main key={`${params.name}`} className="h-screen overflow-hidden">
       <NavBer 
       activeElement={activeElement}
       handleActiveElement={handleActiveElement}
       />
       <section className="flex h-full flex-row">
         <LeftSidebar />
-        <Live key={`${params.name}-${params.id}`} canvasRef={canvasRef} />
+        <Live key={`${params.name}`} canvasRef={canvasRef} />
         <RightSidebar />
       </section>
     </main>

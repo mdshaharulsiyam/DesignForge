@@ -13,7 +13,7 @@ const page = async () => {
     if (session?.user) {
         const randomPathId = generateRandomString(10)
         const username: string | undefined = session?.user?.name?.replace(/\s/g, "")
-        const uri: string = `/user/${username}/${randomPathId}`
+        const uri: string = `/user/${username}${randomPathId}`
         redirect(uri)
     }
     return (
