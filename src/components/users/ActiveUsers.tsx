@@ -10,6 +10,7 @@ const ActiveUsers = () => {
     const session = useSession()
     const users = useOthers();
     let currentUser = useSelf();
+    // console.log(currentUser)
     if (!session?.data?.user?.email) {
         currentUser.info = undefined
         currentUser.id = undefined
@@ -21,7 +22,7 @@ const ActiveUsers = () => {
         }
         currentUser.id = session?.data?.user?.email
     }
-    console.log(users)
+    // console.log(currentUser)
     const hasMoreUsers = users.length > 3;
     const memorigedUser = useMemo(() => {
         return (

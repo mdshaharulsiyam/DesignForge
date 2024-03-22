@@ -4,7 +4,7 @@ import { ActiveElement, NavbarProps } from "@/types/type";
 import Image from "next/image";
 import { memo } from "react";
 import ActiveUsers from "../users/ActiveUsers";
-import logo from '@/assets/designforgelogo.png'
+import logo from '@/assets/loader.gif'
 import { navElements } from "@/constants";
 import ShapesMenu from "./ShapesMenu";
 import { NewThread } from "./NewThread";
