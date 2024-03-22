@@ -7,8 +7,10 @@ import { CursorMode, CursorState, Reaction, ReactionEvent } from '@/types/type'
 import ReactionSelector from '../Reaction/ReactionButton'
 import FlyingReaction from '../Reaction/FlyingReaction'
 import useInterval from '@/hooks/useInterval'
-
-const Live = () => {
+type Props = {
+    canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
+  };
+const Live = ({canvasRef}:Props) => {
     const [cursorState, setCursorState] = useState<CursorState>({
         mode: CursorMode.Hidden
     })
@@ -101,14 +103,14 @@ const Live = () => {
         })
     }, [])
     return (
-        <div
+        <div id='canvas'
             onPointerMove={handelPointerMove}
             onPointerLeave={handelPointerLeave}
             onPointerDown={handelPointerDown}
             onPointerUp={handelPointerUp}
             className="h-[100vh] w-full flex justify-center items-center text-center"
         >
-            <h3 className="text-2xl text-white">DesignForge </h3>
+            <canvas ref={canvasRef}/>
             {reaction.map(item => (
                 <FlyingReaction
                     key={item.timestamp.toString()}

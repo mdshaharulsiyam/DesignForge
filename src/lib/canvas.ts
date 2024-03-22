@@ -31,13 +31,11 @@ export const initializeFabric = ({
     height: canvasElement?.clientHeight,
   });
 
-  // set canvas reference to fabricRef so we can use it later anywhere outside canvas listener
   fabricRef.current = canvas;
 
   return canvas;
 };
 
-// instantiate creation of custom fabric object/shape and add it to canvas
 export const handleCanvasMouseDown = ({
   options,
   canvas,
@@ -45,21 +43,11 @@ export const handleCanvasMouseDown = ({
   isDrawing,
   shapeRef,
 }: CanvasMouseDown) => {
-  // get pointer coordinates
   const pointer = canvas.getPointer(options.e);
 
-  /**
-   * get target object i.e., the object that is clicked
-   * findtarget() returns the object that is clicked
-   *
-   * findTarget: http://fabricjs.com/docs/fabric.Canvas.html#findTarget
-   */
   const target = canvas.findTarget(options.e, false);
 
-  // set canvas drawing mode to false
   canvas.isDrawingMode = false;
-
-  // if selected shape is freeform, set drawing mode to true and return
   if (selectedShapeRef.current === "freeform") {
     isDrawing.current = true;
     canvas.isDrawingMode = true;
@@ -69,7 +57,6 @@ export const handleCanvasMouseDown = ({
 
   canvas.isDrawingMode = false;
 
-  // if target is the selected shape or active selection, set isDrawing to false
   if (
     target &&
     (target.type === selectedShapeRef.current ||
@@ -77,32 +64,26 @@ export const handleCanvasMouseDown = ({
   ) {
     isDrawing.current = false;
 
-    // set active object to target
     canvas.setActiveObject(target);
 
-    /**
-     * setCoords() is used to update the controls of the object
-     * setCoords: http://fabricjs.com/docs/fabric.Object.html#setCoords
-     */
+
     target.setCoords();
   } else {
     isDrawing.current = true;
 
-    // create custom fabric object/shape and set it to shapeRef
     shapeRef.current = createSpecificShape(
       selectedShapeRef.current,
       pointer as any
     );
 
-    // if shapeRef is not null, add it to canvas
+
     if (shapeRef.current) {
-      // add: http://fabricjs.com/docs/fabric.Canvas.html#add
+
       canvas.add(shapeRef.current);
     }
   }
 };
 
-// handle mouse move event on canvas to draw shapes with different dimensions
 export const handleCanvaseMouseMove = ({
   options,
   canvas,
@@ -111,17 +92,12 @@ export const handleCanvaseMouseMove = ({
   shapeRef,
   syncShapeInStorage,
 }: CanvasMouseMove) => {
-  // if selected shape is freeform, return
   if (!isDrawing.current) return;
   if (selectedShapeRef.current === "freeform") return;
 
   canvas.isDrawingMode = false;
 
-  // get pointer coordinates
   const pointer = canvas.getPointer(options.e);
-
-  // depending on the selected shape, set the dimensions of the shape stored in shapeRef in previous step of handelCanvasMouseDown
-  // calculate shape dimensions based on pointer coordinates
   switch (selectedShapeRef?.current) {
     case "rectangle":
       shapeRef.current?.set({
