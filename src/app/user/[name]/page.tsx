@@ -138,7 +138,7 @@ export default function usePage({ params }: { params: { name: string } }) {
         handleActiveElement={handleActiveElement}
       />
       <section className="flex h-full flex-row">
-        <LeftSidebar />
+        <LeftSidebar allShapes={Array.from(canvasObjects)} />
         <Live key={`${params.name}`} canvasRef={canvasRef} />
         <RightSidebar />
       </section>

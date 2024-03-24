@@ -136,11 +136,8 @@ export const handleCanvaseMouseMove = ({
       break;
   }
 
-  // render objects on canvas
-  // renderAll: http://fabricjs.com/docs/fabric.Canvas.html#renderAll
   canvas.renderAll();
 
-  // sync shape in storage
   if (shapeRef.current?.objectId) {
     syncShapeInStorage(shapeRef.current);
   }
@@ -159,15 +156,12 @@ export const handleCanvasMouseUp = ({
   isDrawing.current = false;
   if (selectedShapeRef.current === "freeform") return;
 
-  // sync shape in storage as drawing is stopped
   syncShapeInStorage(shapeRef.current);
 
-  // set everything to null
   shapeRef.current = null;
   activeObjectRef.current = null;
   selectedShapeRef.current = null;
 
-  // if canvas is not in drawing mode, set active element to default nav element after 700ms
   if (!canvas.isDrawingMode) {
     setTimeout(() => {
       setActiveElement(defaultNavElement);
@@ -175,7 +169,6 @@ export const handleCanvasMouseUp = ({
   }
 };
 
-// update shape in storage when object is modified
 export const handleCanvasObjectModified = ({
   options,
   syncShapeInStorage,
@@ -190,40 +183,30 @@ export const handleCanvasObjectModified = ({
   }
 };
 
-// update shape in storage when path is created when in freeform mode
 export const handlePathCreated = ({
   options,
   syncShapeInStorage,
 }: CanvasPathCreated) => {
-  // get path object
   const path = options.path;
   if (!path) return;
 
-  // set unique id to path object
   path.set({
     objectId: uuid4(),
   });
 
-  // sync shape in storage
   syncShapeInStorage(path);
 };
 
-// check how object is moving on canvas and restrict it to canvas boundaries
 export const handleCanvasObjectMoving = ({
   options,
 }: {
   options: fabric.IEvent;
 }) => {
-  // get target object which is moving
   const target = options.target as fabric.Object;
-
-  // target.canvas is the canvas on which the object is moving
   const canvas = target.canvas as fabric.Canvas;
 
-  // set coordinates of target object
   target.setCoords();
 
-  // restrict object to canvas boundaries (horizontal)
   if (target && target.left) {
     target.left = Math.max(
       0,
@@ -234,7 +217,6 @@ export const handleCanvasObjectMoving = ({
     );
   }
 
-  // restrict object to canvas boundaries (vertical)
   if (target && target.top) {
     target.top = Math.max(
       0,
@@ -246,24 +228,18 @@ export const handleCanvasObjectMoving = ({
   }
 };
 
-// set element attributes when element is selected
 export const handleCanvasSelectionCreated = ({
   options,
   isEditingRef,
   setElementAttributes,
 }: CanvasSelectionCreated) => {
-  // if user is editing manually, return
   if (isEditingRef.current) return;
 
-  // if no element is selected, return
   if (!options?.selected) return;
 
-  // get the selected element
   const selectedElement = options?.selected[0] as fabric.Object;
 
-  // if only one element is selected, set element attributes
   if (selectedElement && options.selected.length === 1) {
-    // calculate scaled dimensions of the object
     const scaledWidth = selectedElement?.scaleX
       ? selectedElement?.width! * selectedElement?.scaleX
       : selectedElement?.width;
@@ -321,35 +297,20 @@ export const renderCanvas = ({
 
   // render all objects on canvas
   Array.from(canvasObjects, ([objectId, objectData]) => {
-    /**
-     * enlivenObjects() is used to render objects on canvas.
-     * It takes two arguments:
-     * 1. objectData: object data to render on canvas
-     * 2. callback: callback function to execute after rendering objects
-     * on canvas
-     *
-     * enlivenObjects: http://fabricjs.com/docs/fabric.util.html#.enlivenObjectEnlivables
-     */
+
     fabric.util.enlivenObjects(
       [objectData],
       (enlivenedObjects: fabric.Object[]) => {
         enlivenedObjects.forEach((enlivenedObj) => {
-          // if element is active, keep it in active state so that it can be edited further
+
           if (activeObjectRef.current?.objectId === objectId) {
             fabricRef.current?.setActiveObject(enlivenedObj);
           }
 
-          // add object to canvas
           fabricRef.current?.add(enlivenedObj);
         });
       },
-      /**
-       * specify namespace of the object for fabric to render it on canvas
-       * A namespace is a string that is used to identify the type of
-       * object.
-       *
-       * Fabric Namespace: http://fabricjs.com/docs/fabric.html
-       */
+
       "fabric"
     );
   });
@@ -357,7 +318,6 @@ export const renderCanvas = ({
   fabricRef.current?.renderAll();
 };
 
-// resize canvas dimensions on window resize
 export const handleResize = ({ canvas }: { canvas: fabric.Canvas | null }) => {
   const canvasElement = document.getElementById("canvas");
   if (!canvasElement) return;
@@ -370,7 +330,7 @@ export const handleResize = ({ canvas }: { canvas: fabric.Canvas | null }) => {
   });
 };
 
-// zoom canvas on mouse scroll
+
 export const handleCanvasZoom = ({
   options,
   canvas,
@@ -381,16 +341,12 @@ export const handleCanvasZoom = ({
   const delta = options.e?.deltaY;
   let zoom = canvas.getZoom();
 
-  // allow zooming to min 20% and max 100%
   const minZoom = 0.2;
   const maxZoom = 1;
   const zoomStep = 0.001;
 
-  // calculate zoom based on mouse scroll wheel with min and max zoom
   zoom = Math.min(Math.max(minZoom, zoom + delta * zoomStep), maxZoom);
 
-  // set zoom to canvas
-  // zoomToPoint: http://fabricjs.com/docs/fabric.Canvas.html#zoomToPoint
   canvas.zoomToPoint({ x: options.e.offsetX, y: options.e.offsetY }, zoom);
 
   options.e.preventDefault();

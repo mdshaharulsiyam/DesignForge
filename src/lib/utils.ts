@@ -1,7 +1,13 @@
 // import jsPDF from "jspdf";
 import { twMerge } from "tailwind-merge";
 import { type ClassValue, clsx } from "clsx";
-
+import circle from '@/assets/circle.svg'
+import triangle from '@/assets/triangle.svg'
+import line from '@/assets/line.svg'
+import text from '@/assets/text.svg'
+import image from '@/assets/image.svg'
+import freeform from '@/assets/freeform.svg'
+import rectangle from '@/assets/rectangle.svg'
 const adjectives = [
   "Happy",
   "Creative",
@@ -50,49 +56,49 @@ export const getShapeInfo = (shapeType: string) => {
   switch (shapeType) {
     case "rect":
       return {
-        icon: "/assets/rectangle.svg",
+        icon: "@/assets/rectangle.svg",
         name: "Rectangle",
       };
 
     case "circle":
       return {
-        icon: "/assets/circle.svg",
+        icon: circle,
         name: "Circle",
       };
 
     case "triangle":
       return {
-        icon: "/assets/triangle.svg",
+        icon: triangle,
         name: "Triangle",
       };
 
     case "line":
       return {
-        icon: "/assets/line.svg",
+        icon: line,
         name: "Line",
       };
 
     case "i-text":
       return {
-        icon: "/assets/text.svg",
+        icon: text,
         name: "Text",
       };
 
     case "image":
       return {
-        icon: "/assets/image.svg",
+        icon: image,
         name: "Image",
       };
 
     case "freeform":
       return {
-        icon: "/assets/freeform.svg",
+        icon: freeform,
         name: "Free Drawing",
       };
 
     default:
       return {
-        icon: "/assets/rectangle.svg",
+        icon: rectangle,
         name: shapeType,
       };
   }
