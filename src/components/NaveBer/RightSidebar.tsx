@@ -1,3 +1,4 @@
+import { exportToPdf } from "@/lib/utils";
 import React, { useMemo, useRef } from "react";
 
 import { RightSidebarProps } from "@/types/type";
@@ -72,7 +73,6 @@ const RightSidebar = ({
           attributeType="stroke"
           handleInputChange={handleInputChange}
         />
-
         <Export />
       </section>
     ),

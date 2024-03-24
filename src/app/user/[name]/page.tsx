@@ -7,7 +7,7 @@ import NavBer from "@/components/NaveBer/NavBer";
 import RightSidebar from "@/components/NaveBer/RightSidebar";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { handleCanvasMouseDown, handleCanvasMouseUp, handleCanvasObjectModified, handleCanvasSelectionCreated, handleCanvaseMouseMove, handleResize, initializeFabric, renderCanvas } from "@/lib/canvas";
+import { handleCanvasMouseDown, handleCanvasMouseUp, handleCanvasObjectModified, handleCanvasObjectScaling, handleCanvasSelectionCreated, handleCanvaseMouseMove, handleResize, initializeFabric, renderCanvas } from "@/lib/canvas";
 import { ActiveElement, Attributes } from "@/types/type";
 import { useMutation, useRedo, useStorage, useUndo } from "../../../../liveblocks.config";
 import { handleDelete, handleKeyDown } from "@/lib/key-events";
@@ -142,7 +142,12 @@ export default function usePage({ params }: { params: { name: string } }) {
         canvas: fabricRef.current,
       });
     });
-
+    canvas.on("object:scaling", (options) => {
+      handleCanvasObjectScaling({
+        options,
+        setElementAttributes,
+      });
+    });
     window.addEventListener("keydown", (e) =>
       handleKeyDown({
         e,

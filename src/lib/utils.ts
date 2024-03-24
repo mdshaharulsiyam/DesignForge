@@ -1,4 +1,4 @@
-// import jsPDF from "jspdf";
+import jsPDF from "jspdf";
 import { twMerge } from "tailwind-merge";
 import { type ClassValue, clsx } from "clsx";
 import circle from '@/assets/circle.svg'
@@ -56,7 +56,7 @@ export const getShapeInfo = (shapeType: string) => {
   switch (shapeType) {
     case "rect":
       return {
-        icon: "@/assets/rectangle.svg",
+        icon: rectangle,
         name: "Rectangle",
       };
 
@@ -104,6 +104,18 @@ export const getShapeInfo = (shapeType: string) => {
   }
 };
 
+export const exportToPdf = () => {
+  const canvas = document.querySelector("canvas");
+  if (!canvas) return alert('canvus not found');
+  const doc = new jsPDF({
+    orientation: "landscape",
+    unit: "px",
+    format: [canvas.width, canvas.height],
+  });
+  const data = canvas.toDataURL();
+  doc.addImage(data, "PNG", 0, 0, canvas.width, canvas.height);
+  doc.save("canvas.pdf");
+};
 // export const exportToPdf = () => {
 //   const canvas = document.querySelector("canvas");
 
