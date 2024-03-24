@@ -7,8 +7,8 @@ import NavBer from "@/components/NaveBer/NavBer";
 import RightSidebar from "@/components/NaveBer/RightSidebar";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { handleCanvasMouseDown, handleCanvasMouseUp, handleCanvasObjectModified, handleCanvaseMouseMove, handleResize, initializeFabric, renderCanvas } from "@/lib/canvas";
-import { ActiveElement } from "@/types/type";
+import { handleCanvasMouseDown, handleCanvasMouseUp, handleCanvasObjectModified, handleCanvasSelectionCreated, handleCanvaseMouseMove, handleResize, initializeFabric, renderCanvas } from "@/lib/canvas";
+import { ActiveElement, Attributes } from "@/types/type";
 import { useMutation, useRedo, useStorage, useUndo } from "../../../../liveblocks.config";
 import { handleDelete, handleKeyDown } from "@/lib/key-events";
 import { defaultNavElement } from "@/constants";
@@ -21,6 +21,7 @@ export default function usePage({ params }: { params: { name: string } }) {
   const shapeRef = useRef<fabric.Object | null>(null)
   const selectedShapeRef = useRef<String | null>(null)
   const activeObjectRef = useRef<fabric.Object | null>(null);
+  const isEditingRef = useRef(false);
   const isDrawing = useRef(false)
   const canvasObjects = useStorage((root: any) => root.canvasObjects);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -39,6 +40,16 @@ export default function usePage({ params }: { params: { name: string } }) {
     value: "",
     icon: "",
   })
+
+  const [elementAttributes, setElementAttributes] = useState<Attributes>({
+    width: "",
+    height: "",
+    fontSize: "",
+    fontFamily: "",
+    fontWeight: "",
+    fill: "#aabbcc",
+    stroke: "#aabbcc",
+  });
 
   const deleteAllShapes = useMutation(({ storage }: { storage: any }) => {
     const canvasObjects = storage.get("canvasObjects");
@@ -117,6 +128,15 @@ export default function usePage({ params }: { params: { name: string } }) {
         syncShapeInStorage,
       });
     });
+
+    canvas.on("selection:created", (options) => {
+      handleCanvasSelectionCreated({
+        options,
+        isEditingRef,
+        setElementAttributes,
+      });
+    });
+
     window.addEventListener("resize", () => {
       handleResize({
         canvas: fabricRef.current,
@@ -124,15 +144,15 @@ export default function usePage({ params }: { params: { name: string } }) {
     });
 
     window.addEventListener("keydown", (e) =>
-    handleKeyDown({
-      e,
-      canvas: fabricRef.current,
-      undo,
-      redo,
-      syncShapeInStorage,
-      deleteShapeFromStorage,
-    })
-  );
+      handleKeyDown({
+        e,
+        canvas: fabricRef.current,
+        undo,
+        redo,
+        syncShapeInStorage,
+        deleteShapeFromStorage,
+      })
+    );
 
     return () => {
       canvas.dispose()
@@ -147,7 +167,7 @@ export default function usePage({ params }: { params: { name: string } }) {
     });
   }, [canvasObjects]);
   return (
-    <main key={`${params.name}`} className="h-screen overflow-hidden">
+    <main key={`${params.name}`} className="h-svh overflow-hidden">
       <NavBer
         activeElement={activeElement}
         handleActiveElement={handleActiveElement}
@@ -165,7 +185,14 @@ export default function usePage({ params }: { params: { name: string } }) {
       <section className="flex h-full flex-row">
         <LeftSidebar allShapes={Array.from(canvasObjects)} />
         <Live key={`${params.name}`} canvasRef={canvasRef} />
-        <RightSidebar />
+        <RightSidebar
+          elementAttributes={elementAttributes}
+          setElementAttributes={setElementAttributes}
+          fabricRef={fabricRef}
+          isEditingRef={isEditingRef}
+          activeObjectRef={activeObjectRef}
+          syncShapeInStorage={syncShapeInStorage}
+        />
       </section>
     </main>
   );
