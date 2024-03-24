@@ -9,10 +9,12 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { handleCanvasMouseDown, handleCanvasMouseUp, handleCanvasObjectModified, handleCanvaseMouseMove, handleResize, initializeFabric, renderCanvas } from "@/lib/canvas";
 import { ActiveElement } from "@/types/type";
-import { useMutation, useStorage } from "../../../../liveblocks.config";
-import { handleDelete } from "@/lib/key-events";
+import { useMutation, useRedo, useStorage, useUndo } from "../../../../liveblocks.config";
+import { handleDelete, handleKeyDown } from "@/lib/key-events";
 import { defaultNavElement } from "@/constants";
 export default function usePage({ params }: { params: { name: string } }) {
+  const undo = useUndo();
+  const redo = useRedo();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<fabric.Canvas | null>(null);
   const shapeRef = useRef<fabric.Object | null>(null)
@@ -119,6 +121,18 @@ export default function usePage({ params }: { params: { name: string } }) {
         canvas: fabricRef.current,
       });
     });
+
+    window.addEventListener("keydown", (e) =>
+    handleKeyDown({
+      e,
+      canvas: fabricRef.current,
+      undo,
+      redo,
+      syncShapeInStorage,
+      deleteShapeFromStorage,
+    })
+  );
+
     return () => {
       canvas.dispose()
     }
