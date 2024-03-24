@@ -12,6 +12,7 @@ import { ActiveElement } from "@/types/type";
 import { useMutation, useRedo, useStorage, useUndo } from "../../../../liveblocks.config";
 import { handleDelete, handleKeyDown } from "@/lib/key-events";
 import { defaultNavElement } from "@/constants";
+import { handleImageUpload } from "@/lib/shapes";
 export default function usePage({ params }: { params: { name: string } }) {
   const undo = useUndo();
   const redo = useRedo();
@@ -22,6 +23,7 @@ export default function usePage({ params }: { params: { name: string } }) {
   const activeObjectRef = useRef<fabric.Object | null>(null);
   const isDrawing = useRef(false)
   const canvasObjects = useStorage((root: any) => root.canvasObjects);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const syncShapeInStorage = useMutation(({ storage }: { storage: any }, object: any) => {
     if (!object) return;
@@ -67,7 +69,6 @@ export default function usePage({ params }: { params: { name: string } }) {
       case "image":
         imageInputRef.current?.click();
         isDrawing.current = false;
-
         if (fabricRef.current) {
           fabricRef.current.isDrawingMode = false;
         }
@@ -150,6 +151,16 @@ export default function usePage({ params }: { params: { name: string } }) {
       <NavBer
         activeElement={activeElement}
         handleActiveElement={handleActiveElement}
+        imageInputRef={imageInputRef}
+        handleImageUpload={(e: any) => {
+          e.stopPropagation();
+          handleImageUpload({
+            file: e.target.files[0],
+            canvas: fabricRef as any,
+            shapeRef,
+            syncShapeInStorage,
+          });
+        }}
       />
       <section className="flex h-full flex-row">
         <LeftSidebar allShapes={Array.from(canvasObjects)} />
