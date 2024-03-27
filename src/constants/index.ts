@@ -1,33 +1,49 @@
+import select from '@/assets/select.svg'
+import rectangle from '@/assets/rectangle.svg'
+import text from '@/assets/text.svg'
+import deletes from '@/assets/delete.svg'
+import reset from '@/assets/reset.svg'
+import coments from '@/assets/comments.svg'
+import front from '@/assets/front.svg'
+import back from '@/assets/back.svg'
+import alignleft from '@/assets/align-left.svg'
+import aligntop from '@/assets/align-top.svg'
+import alignbottom from '@/assets/align-bottom.svg'
+import circle from '@/assets/circle.svg'
+import triangle from '@/assets/triangle.svg'
+import line from '@/assets/line.svg'
+import image from '@/assets/image.svg'
+import freeform from '@/assets/freeform.svg'
 export const COLORS = ["#DC2626", "#D97706", "#059669", "#7C3AED", "#DB2777"];
 
 export const shapeElements = [
   {
-    icon: "/assets/rectangle.svg",
+    icon: rectangle,
     name: "Rectangle",
     value: "rectangle",
   },
   {
-    icon: "/assets/circle.svg",
+    icon: circle,
     name: "Circle",
     value: "circle",
   },
   {
-    icon: "/assets/triangle.svg",
+    icon: triangle,
     name: "Triangle",
     value: "triangle",
   },
   {
-    icon: "/assets/line.svg",
+    icon: line,
     name: "Line",
     value: "line",
   },
   {
-    icon: "/assets/image.svg",
+    icon: image,
     name: "Image",
     value: "image",
   },
   {
-    icon: "/assets/freeform.svg",
+    icon: freeform,
     name: "Free Drawing",
     value: "freeform",
   },
@@ -35,46 +51,46 @@ export const shapeElements = [
 
 export const navElements = [
   {
-    icon: "/assets/select.svg",
+    icon: select,
     name: "Select",
     value: "select",
   },
   {
-    icon: "/assets/rectangle.svg",
+    icon: rectangle,
     name: "Rectangle",
     value: shapeElements,
   },
   {
-    icon: "/assets/text.svg",
+    icon: text,
     value: "text",
     name: "Text",
   },
   {
-    icon: "/assets/delete.svg",
+    icon: deletes,
     value: "delete",
     name: "Delete",
   },
   {
-    icon: "/assets/reset.svg",
+    icon: reset,
     value: "reset",
     name: "Reset",
   },
   {
-    icon: "/assets/comments.svg",
+    icon: coments,
     value: "comments",
     name: "Comments",
   },
 ];
 
 export const defaultNavElement = {
-  icon: "/assets/select.svg",
+  icon: select,
   name: "Select",
   value: "select",
 };
 
 export const directionOptions = [
-  { label: "Bring to Front", value: "front", icon: "/assets/front.svg" },
-  { label: "Send to Back", value: "back", icon: "/assets/back.svg" },
+  { label: "Bring to Front", value: "front", icon: front },
+  { label: "Send to Back", value: "back", icon: back },
 ];
 
 export const fontFamilyOptions = [
@@ -165,14 +181,14 @@ export const alignmentOptions = [
     label: "Align Horizontal Center",
     icon: "/assets/align-horizontal-center.svg",
   },
-  { value: "right", label: "Align Right", icon: "/assets/align-right.svg" },
-  { value: "top", label: "Align Top", icon: "/assets/align-top.svg" },
+  { value: "right", label: "Align Right", icon: alignleft },
+  { value: "top", label: "Align Top", icon: aligntop },
   {
     value: "verticalCenter",
     label: "Align Vertical Center",
     icon: "/assets/align-vertical-center.svg",
   },
-  { value: "bottom", label: "Align Bottom", icon: "/assets/align-bottom.svg" },
+  { value: "bottom", label: "Align Bottom", icon: alignbottom },
 ];
 
 export const shortcuts = [

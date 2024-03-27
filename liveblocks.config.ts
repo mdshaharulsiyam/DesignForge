@@ -1,6 +1,6 @@
-import { createClient } from "@liveblocks/client";
+import { LiveMap, createClient } from "@liveblocks/client";
 import { createRoomContext, createLiveblocksContext } from "@liveblocks/react";
-  
+
 const client = createClient({
   publicApiKey: process.env.NEXT_PUBLIC_LIVEBLOCKS_KEY!,
   // authEndpoint: "/api/liveblocks-auth",
@@ -8,14 +8,14 @@ const client = createClient({
   async resolveUsers({ userIds }) {
     // Used only for Comments and Notifications. Return a list of user information
     // retrieved from `userIds`. This info is used in comments, mentions etc.
-    
+
     // const usersData = await __fetchUsersFromDB__(userIds);
     // 
     // return usersData.map((userData) => ({
     //   name: userData.name,
     //   avatar: userData.avatar.src,
     // }));
-    
+
     return [];
   },
   async resolveMentionSuggestions({ text }) {
@@ -35,14 +35,14 @@ const client = createClient({
   async resolveRoomsInfo({ roomIds }) {
     // Used only for Comments and Notifications. Return a list of room information
     // retrieved from `roomIds`.
-    
+
     // const roomsData = await __fetchRoomsFromDB__(roomIds);
     // 
     // return roomsData.map((roomData) => ({
     //   name: roomData.name,
     //   url: roomData.url,
     // }));
-    
+
     return [];
   },
 });
@@ -62,16 +62,30 @@ type Presence = {
 type Storage = {
   // author: LiveObject<{ firstName: string, lastName: string }>,
   // ...
+  canvasObjects: LiveMap<string, any>;
 };
 
 // Optionally, UserMeta represents static/readonly metadata on each user, as
 // provided by your own custom auth back end (if used). Useful for data that
 // will not change during a session, like a user's name or avatar.
+// type UserMeta = {
+//   // id?: string,  // Accessible through `user.id`
+//   // info?: Json,  // Accessible through `user.info`
+// };
+// type UserMeta = {
+//   id?: string | undefined;
+//   info?: {
+//     name: string | 'annonmus';
+//     avatar: string |  'annonmus'
+//   } | undefined;
+// };
 type UserMeta = {
-  // id?: string,  // Accessible through `user.id`
-  // info?: Json,  // Accessible through `user.info`
-};
-
+  id: string |undefined;
+  info: {
+    name: string;
+    avatar: string;
+  } | undefined;
+}
 // Optionally, the type of custom events broadcast and listened to in this
 // room. Use a union for multiple events. Must be JSON-serializable.
 type RoomEvent = {
@@ -128,7 +142,7 @@ export const {
     useMarkThreadAsRead,
     useRoomNotificationSettings,
     useUpdateRoomNotificationSettings,
-  
+
     // These hooks can be exported from either context
     // useUser,
     // useRoomInfo
@@ -143,9 +157,10 @@ export const {
     useMarkAllInboxNotificationsAsRead,
     useInboxNotifications,
     useUnreadInboxNotificationsCount,
-  
+
     // These hooks can be exported from either context
     useUser,
     useRoomInfo,
   }
-} = createLiveblocksContext<UserMeta, ThreadMetadata>(client);
+} = createLiveblocksContext<ThreadMetadata>(client);
+// } = createLiveblocksContext<UserMeta, ThreadMetadata>(client);
