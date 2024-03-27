@@ -17,4 +17,3 @@ export function Avatar({ name, otherStyle, avatar }: { otherStyle: string; name:
         </div>
     );
 }
-//                src={`https://liveblocks.io/avatars/avatar-${Math.floor(Math.random() * 30)}.png`}

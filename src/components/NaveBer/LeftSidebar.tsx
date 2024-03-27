@@ -3,6 +3,8 @@
 import { useMemo } from "react";
 import Image from "next/image";
 import { getShapeInfo } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { signOut } from "next-auth/react";
 const LeftSidebar = ({ allShapes }: { allShapes: Array<any> }) => {
   const memoizedShapes = useMemo(
     () => (
@@ -29,6 +31,15 @@ const LeftSidebar = ({ allShapes }: { allShapes: Array<any> }) => {
             );
           })}
         </div>
+        <Button onClick={()=>{
+          alert('sign out')
+          signOut()
+        }}
+          variant='outline'
+          className='w-full border absolute bottom-16 border-primary-grey-100 hover:bg-primary-green hover:text-primary-black'
+        >
+          sign out
+        </Button>
       </section>
     ),
     [allShapes?.length]

@@ -7,9 +7,8 @@ import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
   const session: Session | null = await auth();
-  if ((!request.nextUrl.pathname.startsWith('/api/auth') || request.nextUrl.pathname !== '/') && !session?.user) {
-
-    return NextResponse.rewrite(new URL('/api/auth/signin', request.url))
+  if (request.nextUrl.pathname.startsWith('/user') && !session?.user) {
+    return NextResponse.rewrite(new URL('/', request.url))
   }
 }
 export const config = {

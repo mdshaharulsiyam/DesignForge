@@ -22,7 +22,7 @@ const page = async () => {
             <div className='z-20'>
                 <h1 style={{ 'textShadow': '2px 2px 4px rgba(0,0,0,0.5)' }} className='text-4xl font-medium'>Introducing designForge - Your Digital Creative Studio</h1>
                 <p style={{ 'textShadow': '2px 4px 8px rgba(0,0,0,0.5)' }} className='max-w-[700px] py-7 text-xl'> Your digital design workshop. Create, collaborate, and innovate with ease. Revolutionize your design process with powerful tools and seamless teamwork, all in one platform.</p>
-                <Link href={`/login`} >
+                <Link href={`/api/auth/signin`} >
                     <Button className='font-bold uppercase hover:text-teal-600 transition-all' variant='outline'>start design</Button>
                 </Link>
             </div>
