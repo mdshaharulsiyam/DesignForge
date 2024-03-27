@@ -9,31 +9,33 @@ import { useMaxZIndex } from "@/lib/useMaxZIndex";
 import { PinnedThread } from "./PinnedThread";
 
 type OverlayThreadProps = {
-    thread: ThreadData<ThreadMetadata>;
-    maxZIndex: number;
+  thread: ThreadData<ThreadMetadata>;
+  maxZIndex: number;
 };
 
 export const Comments = () => {
-    const { threads } = useThreads();
-    const maxZIndex = useMaxZIndex();
+  const { threads } = useThreads();
+  const maxZIndex = useMaxZIndex();
 
-    return (
-        <div>
-            {threads
+  return (
+    <div>
+      {threads
+        //@ts-ignore
         .filter((thread) => !thread.metadata.resolved)
         .map((thread) => (
           <OverlayThread key={thread.id} thread={thread} maxZIndex={maxZIndex} />
         ))}
-        </div>
-    );
+    </div>
+  );
 };
 
 const OverlayThread = ({ thread, maxZIndex }: OverlayThreadProps) => {
   const editThreadMetadata = useEditThreadMetadata();
 
-//   const { isLoading } = useUser(thread.comments[0].userId);
+  //   const { isLoading } = useUser(thread.comments[0].userId);
   const threadRef = useRef<HTMLDivElement>(null);
   const handleIncreaseZIndex = useCallback(() => {
+    //@ts-ignore
     if (maxZIndex === thread.metadata.zIndex) {
       return;
     }
@@ -45,9 +47,9 @@ const OverlayThread = ({ thread, maxZIndex }: OverlayThreadProps) => {
     });
   }, [thread, editThreadMetadata, maxZIndex]);
 
-//   if (isLoading) {
-//     return null;
-//   }
+  //   if (isLoading) {
+  //     return null;
+  //   }
 
   return (
     <div
@@ -55,6 +57,7 @@ const OverlayThread = ({ thread, maxZIndex }: OverlayThreadProps) => {
       id={`thread-${thread.id}`}
       className="absolute left-0 top-0 flex gap-5"
       style={{
+        //@ts-ignore
         transform: `translate(${thread.metadata.x}px, ${thread.metadata.y}px)`,
       }}
     >
