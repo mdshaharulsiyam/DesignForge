@@ -7,8 +7,8 @@ import ActiveUsers from "../users/ActiveUsers";
 import logo from '@/assets/loader.gif'
 import { navElements } from "@/constants";
 import ShapesMenu from "./ShapesMenu";
-import { NewThread } from "./NewThread";
 import { Button } from "../ui/button";
+import { NewThread } from "../Comments/NewThread";
 
 const Navbar = ({ activeElement, imageInputRef, handleImageUpload, handleActiveElement }: NavbarProps) => {
   const isActive = (value: string | Array<ActiveElement>) =>
@@ -30,7 +30,6 @@ const Navbar = ({ activeElement, imageInputRef, handleImageUpload, handleActiveE
             ${isActive(item.value) ? "bg-primary-green" : "hover:bg-primary-grey-200"}
             `}
           >
-            {/* If value is an array means it's a nav element with sub options i.e., dropdown */}
             {Array.isArray(item.value) ? (
               <ShapesMenu
                 item={item}
@@ -40,7 +39,6 @@ const Navbar = ({ activeElement, imageInputRef, handleImageUpload, handleActiveE
                 handleImageUpload={handleImageUpload}
               />
             ) : item?.value === "comments" ? (
-              // If value is comments, trigger the NewThread component
               <NewThread>
                 <Button className="relative w-5 h-5 object-contain">
                   <Image

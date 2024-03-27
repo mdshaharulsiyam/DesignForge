@@ -7,10 +7,21 @@ import { CursorMode, CursorState, Reaction, ReactionEvent } from '@/types/type'
 import ReactionSelector from '../Reaction/ReactionButton'
 import FlyingReaction from '../Reaction/FlyingReaction'
 import useInterval from '@/hooks/useInterval'
+import Coment from '../Comments/Coment'
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuTrigger,
+} from "@/components/ui/context-menu"
+import { shortcuts } from '@/constants'
+
 type Props = {
     canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
-  };
-const Live = ({canvasRef}:Props) => {
+    undo: () => void;
+    redo: () => void;
+};
+const Live = ({ canvasRef, undo, redo }: Props) => {
     const [cursorState, setCursorState] = useState<CursorState>({
         mode: CursorMode.Hidden
     })
@@ -102,39 +113,75 @@ const Live = ({canvasRef}:Props) => {
             isPressed: false
         })
     }, [])
+    const handleContextMenuClick = useCallback((key: string) => {
+        switch (key) {
+            case "Chat":
+                setCursorState({
+                    mode: CursorMode.Chat,
+                    previousMessage: null,
+                    message: "",
+                });
+                break;
+
+            case "Reactions":
+                setCursorState({ mode: CursorMode.ReactionSelector });
+                break;
+
+            case "Undo":
+                undo();
+                break;
+
+            case "Redo":
+                redo();
+                break;
+
+            default:
+                break;
+        }
+    }, []);
     return (
-        <div id='canvas'
-            onPointerMove={handelPointerMove}
-            onPointerLeave={handelPointerLeave}
-            onPointerDown={handelPointerDown}
-            onPointerUp={handelPointerUp}
-            className="h-[100vh] w-full flex justify-center items-center text-center"
-        >
-            <canvas ref={canvasRef}/>
-            {reaction.map(item => (
-                <FlyingReaction
-                    key={item.timestamp.toString()}
-                    x={item.point.x}
-                    y={item.point.y}
-                    timestamp={item.timestamp}
-                    value={item.value}
-                />
-            ))}
-            {cursor && (
-                <CursorChat
-                    updateMyPresence={updateMyPresence}
-                    setCursorState={setCursorState}
-                    cursor={cursor}
-                    cursorState={cursorState}
-                />
-            )}
-            {cursorState.mode === CursorMode.ReactionSelector && (
-                <ReactionSelector
-                    setReaction={setReactionFunction}
-                />
-            )}
-            <LiveCursor others={others} />
-        </div>
+        <ContextMenu>
+            <ContextMenuTrigger id='canvas'
+                onPointerMove={handelPointerMove}
+                onPointerLeave={handelPointerLeave}
+                onPointerDown={handelPointerDown}
+                onPointerUp={handelPointerUp}
+                className="relative h-[100vh] w-full flex flex-1 justify-center items-center text-center"
+            >
+                <canvas ref={canvasRef} />
+                {reaction.map(item => (
+                    <FlyingReaction
+                        key={item.timestamp.toString()}
+                        x={item.point.x}
+                        y={item.point.y}
+                        timestamp={item.timestamp}
+                        value={item.value}
+                    />
+                ))}
+                {cursor && (
+                    <CursorChat
+                        updateMyPresence={updateMyPresence}
+                        setCursorState={setCursorState}
+                        cursor={cursor}
+                        cursorState={cursorState}
+                    />
+                )}
+                {cursorState.mode === CursorMode.ReactionSelector && (
+                    <ReactionSelector
+                        setReaction={setReactionFunction}
+                    />
+                )}
+                <LiveCursor others={others} />
+                <Coment />
+            </ContextMenuTrigger>
+            <ContextMenuContent className='right-menu-content'>
+                {shortcuts.map(item => <ContextMenuItem  className="right-menu-item" onClick={() => handleContextMenuClick(item?.name)} key={item?.key}>
+                    <p>{item?.name}</p>
+                    <p className='text-xs text-primary-gray-300'>{item?.shortcut}</p>
+                </ContextMenuItem>)}
+            </ContextMenuContent>
+        </ContextMenu>
+
     )
 }
 export default Live

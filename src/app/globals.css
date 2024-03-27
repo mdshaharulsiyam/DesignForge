@@ -11,6 +11,7 @@
 }
 body{
   background: rgb(37, 36, 36);
+  overflow: hidden;
 }
 @layer utilities {
   .no-ring {
